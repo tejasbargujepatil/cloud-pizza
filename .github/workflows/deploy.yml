@@ -10,19 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Verify Docker Username Secret
+        run: |
+          echo "Checking DOCKER_USERNAME secret..."
+          if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
+            echo "ERROR: DOCKER_USERNAME is empty!"
+            exit 1
+          fi
+          echo "DOCKER_USERNAME is configured."
 
-    - name: Build Image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Push Image
-      run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest
+      - name: Build Docker Image
+        run: |
+          docker build -t cloud-pizza:latest .
+
+      - name: Tag Docker Image
+        run: |
+          docker tag cloud-pizza:latest ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest
