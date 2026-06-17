@@ -20,6 +20,7 @@ spec:
       containers:
       - name: pizza
         image: tejasbargujepatil/cloud-pizza:latest
+        imagePullPolicy: Always
 
         ports:
         - containerPort: 5000
