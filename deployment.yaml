@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: pizza
-        image: tejasbarguje/cloud-pizza:latest
+        image: tejasbargujepatil/cloud-pizza:latest
 
         ports:
         - containerPort: 5000
