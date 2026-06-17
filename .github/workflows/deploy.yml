@@ -13,14 +13,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Verify Docker Username Secret
+      - name: Verify Secret Exists
         run: |
-          echo "Checking DOCKER_USERNAME secret..."
-          if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
-            echo "ERROR: DOCKER_USERNAME is empty!"
-            exit 1
-          fi
-          echo "DOCKER_USERNAME is configured."
+          echo "Username length:"
+          echo -n "${{ secrets.DOCKER_USERNAME }}" | wc -c
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -30,12 +26,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t cloud-pizza:latest .
-
-      - name: Tag Docker Image
-        run: |
-          docker tag cloud-pizza:latest ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest
+          docker build -t tejasbargujepatil/cloud-pizza:latest .
 
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/cloud-pizza:latest
+          docker push tejasbargujepatil/cloud-pizza:latest
